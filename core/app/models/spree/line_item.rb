@@ -20,8 +20,8 @@ module Spree
     before_save :update_inventory
     before_destroy :ensure_not_shipped, :remove_inventory
 
-    after_save :update_order
-    after_destroy :update_order
+    after_commit :update_order
+    # after_destroy :update_order
 
     def copy_price
       self.price = variant.price if variant && price.nil?
