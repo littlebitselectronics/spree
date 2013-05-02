@@ -64,20 +64,22 @@ module Spree
 
               before_transition :to => :complete do |order|
                 begin
+                  Rails.logger.info "IN BEFORE TRANS!!!!!!!!!!!!!!!"
+                  order.create_shipment!
                   order.process_payments! if order.payment_required?
                 rescue Spree::Core::GatewayError
                   !!Spree::Config[:allow_checkout_on_gateway_error]
                 end
               end
 
-              before_transition :to => :delivery, :do => :remove_invalid_shipments!
+              before_transition :to => :billing, :do => :remove_invalid_shipments!
 
               after_transition :to => :complete, :do => :finalize!
-              after_transition :to => :delivery, :do => :create_tax_charge!
+              after_transition :to => :billing, :do => :create_tax_charge!
               after_transition :to => :resumed,  :do => :after_resume
               after_transition :to => :canceled, :do => :after_cancel
 
-              after_transition :from => :delivery,  :do => :create_shipment!
+              # after_transition :from => :billing,  :do => :create_shipment!
             end
           end
 
