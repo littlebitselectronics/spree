@@ -83,7 +83,7 @@ module Spree
         order.stub(:associate_user!)
         order.stub_chain(:contents, :add).and_return(line_item = double('LineItem'))
         line_item.should_receive(:update_attributes).with("special" => true)
-        api_post :create, :order => { 
+        api_post :create, :order => {
           :line_items => {
             "0" => {
               :variant_id => variant.to_param, :quantity => 5, :special => true
@@ -100,7 +100,7 @@ module Spree
         order.stub(:associate_user!)
         order.stub_chain(:contents, :add).and_return(line_item = double('LineItem'))
         line_item.should_not_receive(:update_attributes)
-        api_post :create, :order => { 
+        api_post :create, :order => {
           :line_items => {
             "0" => {
               :variant_id => variant.to_param, :quantity => 5
@@ -199,6 +199,20 @@ module Spree
         json_response['error'].should_not be_nil
         json_response['errors'].should_not be_nil
         json_response['errors']['ship_address.firstname'].first.should eq "can't be blank"
+      end
+
+      context "order has shipments" do
+        before { order.create_proposed_shipments }
+
+        it "clears out all existing shipments on line item udpate" do
+          previous_shipments = order.shipments
+          api_put :update, :id => order.to_param, :order => {
+            :line_items => {
+              line_item.id => { :quantity => 10 }
+            }
+          }
+          expect(order.reload.shipments).to be_empty
+        end
       end
 
       context "with a line item" do

@@ -21,7 +21,7 @@ module Spree
 
       if @order.update_attributes(params[:order])
         @order.line_items = @order.line_items.select {|li| li.quantity > 0 }
-        @order.create_proposed_shipments if @order.shipments.any?
+        @order.ensure_updated_shipments
         return if after_update_attributes
 
         respond_with(@order) do |format|
@@ -49,7 +49,7 @@ module Spree
     def populate
       populator = Spree::OrderPopulator.new(current_order(true), current_currency)
       if populator.populate(params.slice(:products, :variants, :quantity))
-        current_order.create_proposed_shipments if current_order.shipments.any?
+        current_order.ensure_updated_shipments
 
         respond_with(@order) do |format|
           format.html { redirect_to cart_path }
