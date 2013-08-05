@@ -28,7 +28,7 @@ module Spree
 
     attr_accessible :line_items, :bill_address_attributes, :ship_address_attributes,
                     :payments_attributes, :ship_address, :bill_address, :currency,
-                    :line_items_attributes, :number, :email, :use_billing, 
+                    :line_items_attributes, :number, :email, :use_billing,
                     :special_instructions, :shipments_attributes, :coupon_code
 
     attr_reader :coupon_code
@@ -58,7 +58,7 @@ module Spree
     end
 
     has_many :return_authorizations, dependent: :destroy
-    has_many :adjustments, 
+    has_many :adjustments,
       as: :adjustable,
       dependent: :destroy,
       order: "#{Spree::Adjustment.table_name}.created_at ASC",
@@ -542,6 +542,18 @@ module Spree
       end
 
       shipments
+    end
+
+    # Clean shipments and make order back to address state
+    #
+    # At some point the might need to force the order to transition from address
+    # to delivery again so that proper updated shipments are created.
+    # e.g. customer goes back from payment step and changes order items
+    def ensure_updated_shipments
+      if shipments.any?
+        self.shipments.destroy_all
+        self.update_column(:state, "address")
+      end
     end
 
     private
