@@ -87,10 +87,24 @@ describe Spree::Adjustment do
   end
 
   context "#save" do
-    it "should call order#update!" do
-      adjustment = Spree::Adjustment.new({adjustable: order, amount: 10, label: "Foo"}, without_protection: true)
-      order.should_receive(:update!)
-      adjustment.save
+    let(:adjustment) { Spree::Adjustment.new({adjustable: order, amount: 10, label: "Foo"}, without_protection: true) }
+
+    context "order not completed" do
+      before { order.stub completed?: false }
+
+      it "doesnt call order#update!" do
+        order.should_not_receive(:update!)
+        adjustment.save
+      end
+    end
+
+    context "order completed" do
+      before { order.stub completed?: true }
+
+      it "does call order#update!" do
+        order.should_receive(:update!)
+        adjustment.save
+      end
     end
   end
 

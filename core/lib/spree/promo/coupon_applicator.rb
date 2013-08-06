@@ -27,13 +27,18 @@ module Spree
 
       private
 
+      # Need to call order.update! so that the present promotion adjustments is
+      # properly updated (the Adjustment callback +update_order+ will only run 
+      # it when order is completed)
       def handle_present_promotion(promotion)
         return promotion_expired if promotion.expired?
         return promotion_usage_limit_exceeded if promotion.usage_limit_exceeded?
 
         event_name = "spree.checkout.coupon_code_added"
-        ActiveSupport::Notifications.instrument(event_name, :coupon_code => @order.coupon_code, :order => @order)
-        promo = @order.adjustments.promotion.detect { |p| p.originator.promotion.code == @order.coupon_code }
+        promotion.activate(:coupon_code => @order.coupon_code, :order => @order)
+        order.update!
+
+        promo = @order.adjustments.includes(:originator).promotion.detect { |p| p.originator.promotion.code == @order.coupon_code }
         determine_promotion_application_result(promo)
       end
 
