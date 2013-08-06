@@ -29,6 +29,9 @@ module Spree
     # TODO: This shouldn't be necessary with :autosave option but nested attribute updating of actions is broken without it
     after_save :save_rules_and_actions
 
+    scope :contents_changed,
+      -> { where(event_name: ['spree.cart.add', 'spree.order.contents_changed']) }
+
     def save_rules_and_actions
       (rules + actions).each &:save
     end

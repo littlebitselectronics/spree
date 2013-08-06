@@ -24,6 +24,7 @@ module Spree
 
     before_save :update_inventory
 
+    after_save :run_promos
     after_save :update_order
     after_destroy :update_order
 
@@ -90,8 +91,15 @@ module Spree
         Spree::OrderInventory.new(self.order).verify(self, target_shipment)
       end
 
+      # TODO we shouldn't need to run order.update! here, order.update_totals
+      # should be enough. Applying https://github.com/spree/spree/pull/3492
+      # will help to fix it
+      def run_promos
+        order.update!
+        Promotion.contents_changed.each { |promo| promo.activate(order: order) }
+      end
+
       def update_order
-        # update the order totals, etc.
         order.create_tax_charge!
         order.update!
       end
