@@ -96,7 +96,7 @@ module Spree
       # will help to fix it
       def run_promos
         order.update!
-        Promotion.contents_changed.each { |promo| promo.activate(order: order) }
+        Promotion.active.contents_changed.each { |promo| promo.activate(order: order) }
       end
 
       def update_order
