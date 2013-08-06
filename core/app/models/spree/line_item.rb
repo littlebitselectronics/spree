@@ -91,11 +91,9 @@ module Spree
         Spree::OrderInventory.new(self.order).verify(self, target_shipment)
       end
 
-      # TODO we shouldn't need to run order.update! here, order.update_totals
-      # should be enough. Applying https://github.com/spree/spree/pull/3492
-      # will help to fix it
+      # Promo adjustments need to be calculated over fresh order totals
       def run_promos
-        order.update!
+        order.update_totals
         Promotion.active.contents_changed.each { |promo| promo.activate(order: order) }
       end
 
