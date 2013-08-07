@@ -94,7 +94,7 @@ module Spree
       # Promo adjustments need to be calculated over fresh order totals
       def run_promos
         order.update_totals
-        Promotion.active.contents_changed.each { |promo| promo.activate(order: order) }
+        Promotion.active.includes(:promotion_actions).contents_changed.each { |promo| promo.activate(order: order) }
       end
 
       def update_order
