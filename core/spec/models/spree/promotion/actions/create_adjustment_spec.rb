@@ -19,6 +19,7 @@ describe Spree::Promotion::Actions::CreateAdjustment do
       order.stub(:ship_total => 2500)
 
       action.perform(:order => order)
+      order.update!
       promotion.credits_count.should == 1
       order.adjustments.count.should == 1
       order.adjustments.first.amount.to_i.should == -2500
