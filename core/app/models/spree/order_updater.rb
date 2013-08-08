@@ -26,7 +26,7 @@ module Spree
       end
 
       update_promotion_adjustments
-      update_shipping_adjustments
+      update_shipping_adjustments unless order.cart?
       # update totals a second time in case updated adjustments have an effect on the total
       update_totals
 

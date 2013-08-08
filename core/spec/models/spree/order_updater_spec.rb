@@ -169,8 +169,15 @@ module Spree
 
     context "update adjustments" do
       context "shipments" do
-        it "updates" do
+        it "updates when order is not in cart" do
+          order.stub cart?: false
           expect(updater).to receive(:update_shipping_adjustments)
+          updater.update
+        end
+
+        it "doesn't update when order is in cart" do
+          order.stub cart?: true
+          expect(updater).not_to receive(:update_shipping_adjustments)
           updater.update
         end
       end
