@@ -143,8 +143,7 @@ module Spree
       # have the same amount, then it will pick the latest one.
       def choose_best_promotion_adjustment
         if best_promotion_adjustment = order.adjustments.promotion.eligible.reorder("amount ASC, created_at DESC").first
-          other_promotions = order.adjustments.promotion.where("id NOT IN (?)", best_promotion_adjustment.id)
-          other_promotions.update_all(eligible: false)
+          order.adjustments.promotion.where("id NOT IN (?)", best_promotion_adjustment.id).update_all(eligible: false)
         end
       end
 
