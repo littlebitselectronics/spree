@@ -126,14 +126,14 @@ module Spree
     # Adjustments will check if they are still eligible. Ineligible adjustments
     # are preserved but not counted towards adjustment_total.
     def update_promotion_adjustments
-      order.adjustments.reload.promotion.each { |adjustment| adjustment.update!(order) }
+      order.adjustments.promotion.each { |adjustment| adjustment.update!(order) }
       choose_best_promotion_adjustment
     end
 
     # Shipping adjustments don't receive order on update! because they calculated
     # over a shipping / package object rather than an order object
     def update_shipping_adjustments
-      order.adjustments.reload.shipping.each { |adjustment| adjustment.update! }
+      order.adjustments.shipping.each { |adjustment| adjustment.update! }
     end
 
     private
