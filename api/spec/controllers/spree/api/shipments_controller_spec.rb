@@ -54,6 +54,7 @@ describe Spree::Api::ShipmentsController do
     end
 
     it "can unlock a shipment's adjustment when updating" do
+      order.update_column(:state, "address") # cart state doesn't have shipping adjustments updated
       Spree::Calculator::FlatRate.any_instance.stub(:preferred_amount => 5)
       adjustment = order.adjustments.create(amount: 1, label: 'shipping')
       adjustment.source = shipment
