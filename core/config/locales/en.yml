@@ -63,6 +63,7 @@ en:
         zipcode: Shipping address zipcode
       spree/payment:
         amount: Amount
+        one: "Payment"
       spree/payment_method:
         name: Name
       spree/product:
@@ -360,6 +361,7 @@ en:
     back_to_users_list: Back To Users List
     back_to_zones_list: Back To Zones List
     backorderable: Backorderable
+    backorders_allowed: backorders allowed
     balance_due: Balance Due
     bill_address: Bill Address
     billing: Billing
@@ -454,6 +456,7 @@ en:
     date: Date
     date_completed: Date Completed
     date_picker:
+      first_day: 0
       format: ! '%Y/%m/%d'
       js_format: yy/mm/dd
     date_range: Date Range
@@ -575,6 +578,7 @@ en:
     insufficient_stock: Insufficient stock available, only %{on_hand} remaining
     intercept_email_address: Intercept Email Address
     intercept_email_instructions: Override email recipient and replace with this address.
+    internal_name: Internal Name
     invalid_payment_provider: Invalid payment provider.
     invalid_promotion_action: Invalid promotion action.
     invalid_promotion_rule: Invalid promotion rule.
